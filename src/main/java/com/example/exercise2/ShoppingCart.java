@@ -1,10 +1,10 @@
 package com.example.exercise2;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.stream.Collectors;
 
 public class ShoppingCart {
-    List<CartItem> items = new ArrayList<>();
+    HashSet<CartItem> items = new HashSet<>();
 
     public void addItem(String itemName, int quantity, double price) {
         items.add(new CartItem(itemName, quantity, price));
@@ -36,9 +36,10 @@ public class ShoppingCart {
     }
 
     public double totalSum() {
-        return items.stream()
-                .map(CartItem::price)
-                .reduce(0.0, Double::sum);
+        var priceMultipliedQt = items.stream()
+                .map(cartItem -> cartItem.price() * cartItem.quantity()).toList();
+
+        return priceMultipliedQt.stream().reduce(0.0, Double::sum);
         }
 
     public void applySaleToItem(String itemName, double discount) {

@@ -29,7 +29,7 @@ public class ShoppingCartTest {
         @Test
         @DisplayName("Calculates sum for empty shopping cart Test")
         void calculatesSumForEmptyShoppingCartTest() {
-            assertThat(shoppingCart.totalSum()).isEqualTo(0);
+            assertThat(shoppingCart.totalSum()).isEqualTo(0.0);
 
         }
 
@@ -75,8 +75,8 @@ public class ShoppingCartTest {
         void deleteItemInShoppingCartByNameTest() {
             shoppingCart.deleteItem("apple");
             shoppingCart.deleteItem("kiwi");
-            assertThatList(shoppingCart.items).extracting("itemName", "quantity", "price").contains(tuple("pineapple", 10, 10.0));
-            assertThatList(shoppingCart.items).size().isEqualTo(1);
+            assertThat(shoppingCart.items).extracting("itemName", "quantity", "price").contains(tuple("pineapple", 10, 10.0));
+            assertThat(shoppingCart.items).size().isEqualTo(1);
 
         }
 
