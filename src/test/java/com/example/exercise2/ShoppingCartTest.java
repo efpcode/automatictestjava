@@ -90,7 +90,7 @@ public class ShoppingCartTest {
         @Test
         @DisplayName("Calculates total price for items in ShoppingCart Test")
         void calculatesTotalPriceForItemsInShoppingCartTest() {
-            assertThat(shoppingCart.totalSum()).isEqualTo(30.0);
+            assertThat(shoppingCart.totalSum()).isEqualTo(165.0);
 
         }
 
@@ -99,6 +99,26 @@ public class ShoppingCartTest {
         void applySalesForItemInShoppingCartTest() {
             shoppingCart.applySaleToItem("pineapple", 0.25);
             assertThat(shoppingCart.getItemPrice("pineapple")).isEqualTo(7.5);
+
+        }
+
+        @Test
+        @DisplayName("Items in shopping cart updates quantity additive test ")
+        void itemsInShoppingCartUpdatesQuantityAdditiveTest() {
+            shoppingCart.updateItemQuantity("kiwi", 1);
+            assertThat(shoppingCart.getItem("kiwi"))
+                    .extracting("itemName", "quantity", "price")
+                    .contains("kiwi", 2, 15.0);
+
+        }
+
+        @Test
+        @DisplayName("Items in shopping cart updates quantity subtractive test")
+        void itemsInShoppingCartUpdatesQuantitySubtractiveTest() {
+            shoppingCart.updateItemQuantity("apple", -1);
+            assertThat(shoppingCart.getItem("apple"))
+                    .extracting("itemName", "quantity", "price")
+                    .containsExactly("apple", 8, 5.0);
 
         }
 
