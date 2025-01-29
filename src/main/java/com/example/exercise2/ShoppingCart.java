@@ -1,12 +1,14 @@
 package com.example.exercise2;
 
 import java.util.HashSet;
-import java.util.stream.Collectors;
 
 public class ShoppingCart {
     HashSet<CartItem> items = new HashSet<>();
 
     public void addItem(String itemName, int quantity, double price) {
+        if(itemName == null || itemName.trim().isEmpty()) {
+            throw new IllegalArgumentException("Item name cannot be empty or null");
+        }
         items.add(new CartItem(itemName, quantity, price));
     }
 
@@ -52,7 +54,14 @@ public class ShoppingCart {
     public void updateItemQuantity(String itemName, int quantity) {
         var item = getItem(itemName);
         var newQuantity = item.quantity() + quantity;
-        deleteItem(itemName);
-        addItem(itemName, newQuantity, item.price());
+        if (newQuantity < 0) {
+            throw new IllegalArgumentException("Item cannot have negative quantity");
+        }
+        if (newQuantity == 0) {
+            deleteItem(itemName);
+        } else {
+            deleteItem(itemName);
+            addItem(itemName, newQuantity, item.price());
+        }
     }
 }
