@@ -9,10 +9,24 @@ public class ShoppingCart {
         if(itemName == null || itemName.trim().isEmpty()) {
             throw new IllegalArgumentException("Item name cannot be empty or null");
         }
+        if(items.stream().anyMatch(i -> i.itemName().equalsIgnoreCase(itemName))) {
+            throw new IllegalArgumentException("Item name already exists");
+        }
+
+        if(!(quantity >= 1)) {
+            throw new IllegalArgumentException("Quantity cannot be less than one");
+        }
+
+        if(!(price > 0)) {
+            throw new IllegalArgumentException("Item price cannot be less than zero");
+        }
         items.add(new CartItem(itemName, quantity, price));
     }
 
     public void deleteItem(String itemName) {
+        if(itemName == null || itemName.trim().isEmpty()) {
+            throw new IllegalArgumentException("Item name cannot be empty or null");
+        }
         items.stream().filter(cartItem -> cartItem.itemName().equals(itemName))
                 .findFirst()
                 .ifPresent(item -> items.remove(item));
@@ -57,9 +71,9 @@ public class ShoppingCart {
         if (newQuantity < 0) {
             throw new IllegalArgumentException("Item cannot have negative quantity");
         }
-        if (newQuantity == 0) {
-            deleteItem(itemName);
-        } else {
+
+        if (newQuantity == 0) deleteItem(itemName);
+        else {
             deleteItem(itemName);
             addItem(itemName, newQuantity, item.price());
         }

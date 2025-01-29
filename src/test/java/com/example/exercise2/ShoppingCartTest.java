@@ -179,10 +179,69 @@ public class ShoppingCartTest {
         @Test
         @DisplayName("Duplicate item name should not be added to shopping cart test")
         void duplicateItemNameShouldNotBeAddedToShoppingCartTest() {
-            shoppingCart.addItem("apple", 1, 2.0);
+            assertThatThrownBy(() -> shoppingCart.addItem("apple", 4, 2.0))
+                    .isInstanceOf(IllegalArgumentException.class).hasMessage("Item name already exists");
             assertThat(shoppingCart.size()).isEqualTo(1);
+            assertThat(shoppingCart.getItem("apple"))
+                    .extracting("itemName", "quantity", "price")
+                    .containsExactly("apple", 1, 1.0);
 
         }
+
+        @Test
+        @DisplayName("Partial overlap with item name in Shopping Cart is Allowed Test")
+        void partialOverlapWithItemNameInShoppingCartIsAllowedTest() {
+            shoppingCart.addItem("pple", 4, 2.0);
+            assertThat(shoppingCart.size()).isEqualTo(2);
+
+        }
+
+        @Test
+        @DisplayName("Item name case ignore test")
+        void itemNameCaseIgnoreTest() {
+            assertThatThrownBy(() -> shoppingCart.addItem("Apple", 4, 2.0))
+                    .isInstanceOf(IllegalArgumentException.class).hasMessage("Item name already exists");
+
+        }
+
+        @Test
+        @DisplayName("Quantity cannot be less than or equal zero or null when adding item to shopping cart Test")
+        void quantityCannotBeLessThanOrEqualZeroOrNullWhenAddingItemToShoppingCartTest() {
+            assertThatThrownBy(() -> shoppingCart.addItem("orange", 0, 2.0))
+                    .isInstanceOf(IllegalArgumentException.class).hasMessage("Quantity cannot be less than one");
+
+        }
+
+        @Test
+        @DisplayName("Item Prices cannot be less than 0 or Exception is ThrownTest")
+        void itemPricesCannotBeLessThan0OrExceptionIsThrownTest() {
+            assertThatThrownBy(() -> shoppingCart.addItem("orange", 4, 0.0))
+                    .isInstanceOf(IllegalArgumentException.class).hasMessage("Item price cannot be less than zero");
+            assertThatCode(() -> shoppingCart.addItem("orange", 4, 0.001))
+                    .doesNotThrowAnyException();
+
+        }
+
+
+        @Test
+        @DisplayName("Deletion of item with null throws exception test")
+        void deletionOfItemWithNullThrowsExceptionTest() {
+            assertThatThrownBy(() -> shoppingCart.deleteItem(null))
+                    .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("Item name cannot be empty or null");
+
+        }
+
+        @Test
+        @DisplayName("Deletion of item with empty string throws exception test")
+        void deletionOfItemWithEmptyStringThrowsExceptionTest() {
+            assertThatThrownBy(() -> shoppingCart.deleteItem("")).isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("Item name cannot be empty");
+
+        }
+
+
+
     }
 
 }
