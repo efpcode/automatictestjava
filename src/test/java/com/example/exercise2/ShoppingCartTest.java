@@ -5,7 +5,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -243,14 +242,10 @@ public class ShoppingCartTest {
         }
 
         @Test
-        @DisplayName("Empty or null string when price getting item throw exception test ")
-        void emptyOrNullStringWhenPriceGettingItemThrowExceptionTest() {
-            assertThatThrownBy(() -> shoppingCart.getItemPrice(null))
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessage("Item name cannot be empty or null");
-            assertThatThrownBy(() -> shoppingCart.getItemPrice(""))
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessage("Item name cannot be empty or null");
+        @DisplayName("Empty or null string when price getting item returns minus one test ")
+        void emptyOrNullStringWhenPriceGettingItemReturnsMinusOneTest() {
+            assertThat(shoppingCart.getItemPrice(null)).isEqualTo(-1.0);
+            assertThat(shoppingCart.getItemPrice("")).isEqualTo(-1.0);
 
         }
 
@@ -258,9 +253,21 @@ public class ShoppingCartTest {
         @DisplayName("Empty or null string when getting item from shopping cart throws error")
         void emptyOrNullStringWhenGettingItemFromShoppingCartThrowsError() {
             assertThatThrownBy(() -> shoppingCart.getItem(null))
-                    .isInstanceOf(IllegalArgumentException.class);
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("No item found");
 
         }
+
+        @Test
+        @DisplayName("item discount is within the range of zero and one test")
+        void itemDiscountIsWithinTheRangeOfZeroAndOneTest() {
+            assertThatThrownBy(() -> shoppingCart.applySaleToItem("apple", 1.01))
+                    .isInstanceOf(IllegalArgumentException.class).hasMessage("Item discount cannot be greater than one");
+            assertThatThrownBy(() -> shoppingCart.applySaleToItem("apple", -0.01))
+                    .isInstanceOf(IllegalArgumentException.class).hasMessage("Item discount cannot be less than zero");
+
+        }
+
 
 
 
