@@ -1,9 +1,28 @@
 package com.example.exercise2;
 
 import java.util.HashSet;
+import java.util.Objects;
 
 public class ShoppingCart {
     HashSet<CartItem> items = new HashSet<>();
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof ShoppingCart that)) return false;
+        return Objects.equals(items, that.items);
+    }
+
+    @Override
+    public String toString() {
+        return "ShoppingCart{" +
+                "items=" + items +
+                '}';
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(items);
+    }
 
     public void addItem(String itemName, int quantity, double price) {
         itemNameIsNotNullOrEmpty(itemName);
@@ -62,7 +81,7 @@ public class ShoppingCart {
 
     /**
      * Method calculates a new discounted price of item.
-     * @param itemName
+     * @param itemName the name of an item in store e.g. apple
      * @param discount range is from 0.0 to 1.0 where 1.0 is a 100% discount
      */
     public void applySaleToItem(String itemName, double discount) {
@@ -86,9 +105,9 @@ public class ShoppingCart {
             throw new IllegalArgumentException("Item cannot have negative quantity");
         }
 
-        if (newQuantity == 0) deleteItem(itemName);
-        else {
-            deleteItem(itemName);
+        deleteItem(itemName);
+
+        if (newQuantity >= 1) {
             addItem(itemName, newQuantity, item.price());
         }
     }
