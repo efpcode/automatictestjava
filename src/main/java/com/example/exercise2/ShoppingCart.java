@@ -13,6 +13,13 @@ public class ShoppingCart {
     }
 
     @Override
+    public String toString() {
+        return "ShoppingCart{" +
+                "items=" + items +
+                '}';
+    }
+
+    @Override
     public int hashCode() {
         return Objects.hashCode(items);
     }
