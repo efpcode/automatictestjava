@@ -1,9 +1,21 @@
 package com.example.exercise2;
 
 import java.util.HashSet;
+import java.util.Objects;
 
 public class ShoppingCart {
     HashSet<CartItem> items = new HashSet<>();
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof ShoppingCart that)) return false;
+        return Objects.equals(items, that.items);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(items);
+    }
 
     public void addItem(String itemName, int quantity, double price) {
         itemNameIsNotNullOrEmpty(itemName);
