@@ -12,11 +12,25 @@ public class ShoppingCartTest {
 
     ShoppingCart shoppingCart = new ShoppingCart();
 
+@Nested
+public class autogenMethodsTests {
+
     @Test
     void testEquals() {
         var shoppingCart1 = new ShoppingCart();
         var shoppingCart2 = new ShoppingCart();
         assertThat(shoppingCart1.equals(shoppingCart2)).isTrue();
+    }
+
+    @Test
+    @DisplayName("ShoppingCartWithDifferentItemsIsNotEqualTest")
+    void shoppingCartWithDifferentItemsIsNotEqualTest() {
+        var shoppingCart1 = new ShoppingCart();
+        var shoppingCart2 = new ShoppingCart();
+        shoppingCart1.addItem("apple", 1, 10);
+        shoppingCart2.addItem("orange", 1, 10);
+        assertThat(shoppingCart1.equals(shoppingCart2)).isFalse();
+
     }
 
     @Test
@@ -32,6 +46,7 @@ public class ShoppingCartTest {
         var shoppingCart2 = new ShoppingCart();
         assertThat(shoppingCart1.hashCode()).isEqualTo((shoppingCart2.hashCode()));
     }
+}
 
     @Nested
     public class emptyShoppingCartTests {
