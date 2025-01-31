@@ -62,7 +62,7 @@ public class ShoppingCart {
 
     /**
      * Method calculates a new discounted price of item.
-     * @param itemName
+     * @param itemName the name of an item in store e.g. apple
      * @param discount range is from 0.0 to 1.0 where 1.0 is a 100% discount
      */
     public void applySaleToItem(String itemName, double discount) {
