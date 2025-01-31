@@ -12,6 +12,27 @@ public class ShoppingCartTest {
 
     ShoppingCart shoppingCart = new ShoppingCart();
 
+    @Test
+    void testEquals() {
+        var shoppingCart1 = new ShoppingCart();
+        var shoppingCart2 = new ShoppingCart();
+        assertThat(shoppingCart1.equals(shoppingCart2)).isTrue();
+    }
+
+    @Test
+    void testToString() {
+        var shoppingCart1 = new ShoppingCart();
+        shoppingCart1.addItem("apple", 1, 1);
+        assertThat(shoppingCart1.toString()).isEqualTo("ShoppingCart{items=[CartItem[itemName=apple, quantity=1, price=1.0]]}");
+    }
+
+    @Test
+    void testHashCode() {
+        var shoppingCart1 = new ShoppingCart();
+        var shoppingCart2 = new ShoppingCart();
+        assertThat(shoppingCart1.hashCode()).isEqualTo((shoppingCart2.hashCode()));
+    }
+
     @Nested
     public class emptyShoppingCartTests {
         @Test
