@@ -182,6 +182,21 @@ class BookingSystemTest {
     }
 
 
+    @Test
+    @DisplayName("Canceling room bookingId must not be Null Test")
+    void cancelingRoomBookingIdMustNotBeNullTest() {
+        Room room = new Room(null, "Regular");
+        assertThatThrownBy(() -> bookingSystem.cancelBooking(room.getId()))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Boknings-id kan inte vara null");
+
+        assertThatCode(() -> bookingSystem.cancelBooking(this.room1.getId())).doesNotThrowAnyException();
+
+    }
+
+
+
+
 
 
 
