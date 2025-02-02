@@ -1,6 +1,7 @@
 package com.example;
 
 
+import com.example.exercise2.MockTimeStartAndEnd;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -63,6 +64,18 @@ class BookingSystemTest {
     }
 
 
+    static Stream<Arguments> TimeNullPoster(){
+        var endTime = LocalDateTime.of(2025, 3, 2, 15, 45);
+        var startTime = LocalDateTime.of(2025, 4, 2, 15, 45);
+
+        return Stream.of(
+                Arguments.of(new MockTimeStartAndEnd(null, endTime)),
+                Arguments.of(new MockTimeStartAndEnd(startTime, null)),
+                Arguments.of(new MockTimeStartAndEnd(null, null))
+        );
+    }
+
+
 
 
 
@@ -73,6 +86,17 @@ class BookingSystemTest {
         var outcomes = bookingSystem.bookRoom(room.getId(), startTime, endTime);
         assertThat(outcomes).isTrue();
 
+    }
+
+
+    @ParameterizedTest
+    @MethodSource("TimeNullPoster")
+    @DisplayName("Rooms cannot not be booked with null values Test")
+    void testRoomsCannotBeBookedWithNullValuesTest (MockTimeStartAndEnd mockTime) {
+        Room room1 = new Room("1111", "Regular") ;
+        assertThatThrownBy(() ->bookingSystem.bookRoom(room1.getId(), mockTime.start(), mockTime.end()))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Bokning kräver giltiga start- och sluttider samt rum-id");
 
     }
 
