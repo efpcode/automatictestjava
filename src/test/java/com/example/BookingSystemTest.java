@@ -65,7 +65,7 @@ class BookingSystemTest {
     }
 
 
-    static Stream<Arguments> TimeNullPoster(){
+    static Stream<Arguments> timeNullPoster(){
         var endTime = LocalDateTime.of(2025, 3, 2, 15, 45);
         var startTime = LocalDateTime.of(2025, 4, 2, 15, 45);
 
@@ -82,8 +82,8 @@ class BookingSystemTest {
 
     @ParameterizedTest
     @MethodSource("roomPoster")
-    @DisplayName("Test rooms are available and can be booked Test")
-    void testRoomsAreAvailableAndCanBeBookedTest(Room room) {
+    @DisplayName("Rooms are available and can be booked Test")
+    void RoomsAreAvailableAndCanBeBookedTest(Room room) {
         var outcomes = bookingSystem.bookRoom(room.getId(), this.startTime, this.endTime);
         assertThat(outcomes).isTrue();
 
@@ -91,7 +91,7 @@ class BookingSystemTest {
 
 
     @ParameterizedTest
-    @MethodSource("TimeNullPoster")
+    @MethodSource("timeNullPoster")
     @DisplayName("Rooms cannot not be booked with null values Test")
     void testRoomsCannotBeBookedWithNullValuesTest (MockTimeStartAndEnd mockTime) {
         assertThatThrownBy(() ->bookingSystem.bookRoom(this.room1.getId(), mockTime.start(), mockTime.end()))
@@ -142,8 +142,8 @@ class BookingSystemTest {
 
     @ParameterizedTest
     @MethodSource("roomPoster")
-    @DisplayName("Room that is booked is not available for booking again")
-    void roomThatIsBookedIsNotAvailableForBookingAgain(Room room) {
+    @DisplayName("Room that is booked is not available for booking again Test")
+    void roomThatIsBookedIsNotAvailableForBookingAgainTest(Room room) {
         var outcomes = bookingSystem.bookRoom(room.getId(), this.startTime, this.endTime);
         assertThat(outcomes).isTrue();
         var outcomes2 = bookingSystem.bookRoom(room.getId(), this.startTime, this.endTime);
@@ -158,15 +158,29 @@ class BookingSystemTest {
 
 
     @ParameterizedTest
-    @MethodSource("TimeNullPoster")
+    @MethodSource("timeNullPoster")
     @DisplayName("Search for available rooms time inputs must not be null test")
     void searchForAvailableRoomsTimeInputsMustNotBeNullTest(MockTimeStartAndEnd mockTime) {
         assertThatThrownBy(() -> bookingSystem.getAvailableRooms(mockTime.start(), mockTime.end()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Måste ange både start- och sluttid");
 
+        assertThatCode(() -> bookingSystem.getAvailableRooms(this.startTime, this.endTime)).doesNotThrowAnyException();
+
 
     }
+
+    @Test
+    @DisplayName("Search for available rooms end time is not before start time test")
+    void searchForAvailableRoomsEndTimeIsNotBeforeStartTimeTest() {
+        assertThatThrownBy(() -> bookingSystem.getAvailableRooms(this.endTime, this.startTime))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Sluttid måste vara efter starttid");
+
+
+    }
+
+
 
 
 
