@@ -195,6 +195,16 @@ class BookingSystemTest {
     }
 
 
+    @Test
+    @DisplayName("Canceling nonexistent room has Return value False Test")
+    void cancelingNonexistentRoomHasReturnValueFalseTest() {
+        Room room = new Room("", "Regular");
+        assertThat(bookingSystem.cancelBooking(room.getId())).isFalse();
+        assertThat(bookingSystem.cancelBooking(this.room1.getId())).isFalse();
+
+    }
+
+
 
 
 
