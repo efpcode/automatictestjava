@@ -4,6 +4,7 @@ package com.example;
 import com.example.exercise2.MockTimeStartAndEnd;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -194,7 +195,55 @@ class BookingSystemTest {
 
     }
 
+@Nested
+class BookingCancellationTests {
+        LocalDateTime constantTime;
+        LocalDateTime endTime;
+        LocalDateTime startTime;
+        LocalDateTime rightAfterConstantTime;
+        MockRoomRepository roomRepository;
+        MockTimeProvider timeProvider;
+        MockNotificationService notificationService;
+        Booking booking;
+        Booking booking2;
+        Booking booking3;
+        Booking booking4;
+        BookingSystem bookingSystem;
+        Room room1;
 
+        @BeforeEach
+        void setUp() {
+            timeProvider = new MockTimeProvider();
+            roomRepository = new MockRoomRepository();
+            notificationService = new MockNotificationService();
+            constantTime = timeProvider.getCurrentTime();
+            endTime = LocalDateTime.of(LocalDate.from(constantTime), LocalTime.of(15, 0));
+            startTime = LocalDateTime.of(LocalDate.from(constantTime), LocalTime.of(14, 0));
+            rightAfterConstantTime = constantTime.plusMinutes(5);
+            room1 = new Room("1111", "Regular");
+            booking = new Booking("1", "1111",startTime, endTime);
+            booking2 = new Booking("2", "1111",rightAfterConstantTime, endTime);
+            booking3 = new Booking("3", "1111",endTime, endTime);
+            booking4 = new Booking(null, "1111",endTime, endTime);
+
+        }
+
+    @Test
+    @DisplayName("When cancelling booking Id cannot be null")
+    void whenCancellingBookingIdCannotBeNull() {
+            var bookingSystem = new BookingSystem(timeProvider, roomRepository, notificationService);
+            assertThatThrownBy(() -> bookingSystem.cancelBooking(booking4.getId()))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("Boknings-id kan inte vara null");
+
+
+    }
+
+
+
+
+
+}
 
 
 }
