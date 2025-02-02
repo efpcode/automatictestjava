@@ -127,6 +127,19 @@ class BookingSystemTest {
     }
 
 
+    @Test
+    @DisplayName("Rooms need to exists to be booked Test")
+    void roomsNeedToExistsToBeBookedTest() {
+        Room room2 = new Room("4444", "Fancy Suite");
+
+        assertThatThrownBy(() -> bookingSystem.bookRoom(room2.getId(), this.startTime, this.endTime))
+                .isInstanceOf(IllegalArgumentException.class).hasMessage("Rummet existerar inte");
+
+        assertThatCode(() -> bookingSystem.bookRoom(this.room1.getId(), this.startTime, this.endTime)).doesNotThrowAnyException();
+
+    }
+
+
 
 
 
