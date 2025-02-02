@@ -210,6 +210,7 @@ class BookingCancellationTests {
         Booking booking4;
         BookingSystem bookingSystem;
         Room room1;
+        Room room2;
 
         @BeforeEach
         void setUp() {
@@ -221,6 +222,7 @@ class BookingCancellationTests {
             startTime = LocalDateTime.of(LocalDate.from(constantTime), LocalTime.of(14, 0));
             rightAfterConstantTime = constantTime.plusMinutes(5);
             room1 = new Room("1111", "Regular");
+            room2 = new Room("2222", "Terrace");
             booking = new Booking("1", "1111",startTime, endTime);
             booking2 = new Booking("2", "1111",rightAfterConstantTime, endTime);
             booking3 = new Booking("3", "1111",endTime, endTime);
@@ -238,6 +240,20 @@ class BookingCancellationTests {
 
 
     }
+
+    @Test
+    @DisplayName("Cancellation of room without booking hours is False")
+    void cancellationOfRoomWithoutBookingHoursIsFalse() {
+            room1.addBooking(booking);
+            roomRepository.save(room1);
+            roomRepository.save(room2);
+            var bookingSystem = new BookingSystem(timeProvider, roomRepository, notificationService);
+            assertThat(bookingSystem.cancelBooking(booking3.getId())).isFalse();
+            assertThat(bookingSystem.cancelBooking(booking.getId())).isTrue();
+
+    }
+
+
 
 
 
