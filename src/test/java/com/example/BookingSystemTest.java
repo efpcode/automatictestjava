@@ -140,6 +140,21 @@ class BookingSystemTest {
     }
 
 
+    @ParameterizedTest
+    @MethodSource("roomPoster")
+    @DisplayName("Room that is booked is not available for booking again")
+    void roomThatIsBookedIsNotAvailableForBookingAgain(Room room) {
+        var outcomes = bookingSystem.bookRoom(room.getId(), this.startTime, this.endTime);
+        assertThat(outcomes).isTrue();
+        var outcomes2 = bookingSystem.bookRoom(room.getId(), this.startTime, this.endTime);
+        System.out.println(room.getName());
+        assertThat(outcomes2).isFalse();
+
+        var outcomes3 = bookingSystem.bookRoom(room.getId(), this.constantTime, this.endTime);
+        assertThat(outcomes3).isFalse();
+
+
+    }
 
 
 
