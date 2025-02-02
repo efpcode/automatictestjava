@@ -157,6 +157,19 @@ class BookingSystemTest {
     }
 
 
+    @ParameterizedTest
+    @MethodSource("TimeNullPoster")
+    @DisplayName("Search for available rooms time inputs must not be null test")
+    void searchForAvailableRoomsTimeInputsMustNotBeNullTest(MockTimeStartAndEnd mockTime) {
+        assertThatThrownBy(() -> bookingSystem.getAvailableRooms(mockTime.start(), mockTime.end()))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Måste ange både start- och sluttid");
+
+
+    }
+
+
+
 
 
 }
