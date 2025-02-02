@@ -267,6 +267,17 @@ class BookingCancellationTests {
     }
 
 
+    @Test
+    @DisplayName("Cancellation of room is returns True")
+    void cancellationOfRoomIsReturnsTrue() {
+            room1.addBooking(booking);
+            roomRepository.save(room1);
+            var bookingSystem = new BookingSystem(timeProvider, roomRepository, notificationService);
+            assertThat(bookingSystem.cancelBooking(booking.getId())).isTrue();
+
+    }
+
+
 
 }
 
