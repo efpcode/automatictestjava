@@ -147,7 +147,6 @@ class BookingSystemTest {
         var outcomes = bookingSystem.bookRoom(room.getId(), this.startTime, this.endTime);
         assertThat(outcomes).isTrue();
         var outcomes2 = bookingSystem.bookRoom(room.getId(), this.startTime, this.endTime);
-        System.out.println(room.getName());
         assertThat(outcomes2).isFalse();
 
         var outcomes3 = bookingSystem.bookRoom(room.getId(), this.constantTime, this.endTime);
@@ -176,6 +175,8 @@ class BookingSystemTest {
         assertThatThrownBy(() -> bookingSystem.getAvailableRooms(this.endTime, this.startTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Sluttid måste vara efter starttid");
+
+        assertThatCode(() -> bookingSystem.getAvailableRooms(this.startTime, this.endTime)).doesNotThrowAnyException();
 
 
     }
