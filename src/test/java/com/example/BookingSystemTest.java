@@ -208,7 +208,6 @@ class BookingCancellationTests {
         Booking booking2;
         Booking booking3;
         Booking booking4;
-        BookingSystem bookingSystem;
         Room room1;
         Room room2;
 
@@ -220,11 +219,11 @@ class BookingCancellationTests {
             constantTime = timeProvider.getCurrentTime();
             endTime = LocalDateTime.of(LocalDate.from(constantTime), LocalTime.of(15, 0));
             startTime = LocalDateTime.of(LocalDate.from(constantTime), LocalTime.of(14, 0));
-            rightAfterConstantTime = constantTime.plusMinutes(5);
+            rightAfterConstantTime = constantTime.plusMinutes(-50);
             room1 = new Room("1111", "Regular");
             room2 = new Room("2222", "Terrace");
             booking = new Booking("1", "1111",startTime, endTime);
-            booking2 = new Booking("2", "1111",rightAfterConstantTime, endTime);
+            booking2 = new Booking("2", "2222",rightAfterConstantTime, endTime);
             booking3 = new Booking("3", "1111",endTime, endTime);
             booking4 = new Booking(null, "1111",endTime, endTime);
 
@@ -253,9 +252,19 @@ class BookingCancellationTests {
 
     }
 
+    @Test
+    @DisplayName("Cancellation of room booking is denied when start time is before current time")
+    void cancellationOfRoomBookingIsDeniedWhenStartTimeIsBeforeCurrentTime() {
+            room1.addBooking(booking);
+            room2.addBooking(booking2);
+            roomRepository.save(room1);
+            roomRepository.save(room2);
+            var bookingSystem = new BookingSystem(timeProvider, roomRepository, notificationService);
+            assertThatThrownBy(() -> bookingSystem.cancelBooking(booking2.getId()))
+                    .isInstanceOf(IllegalStateException.class)
+                    .hasMessage("Kan inte avboka påbörjad eller avslutad bokning");
 
-
-
+    }
 
 
 
