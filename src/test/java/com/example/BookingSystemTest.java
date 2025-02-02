@@ -26,6 +26,7 @@ class BookingSystemTest {
     LocalDateTime endTime;
     LocalDateTime constantTime;
     LocalDateTime pastTime;
+    Room room1 = new Room("1111", "Regular") ;
 
     @BeforeEach
             void setUp() {
@@ -93,10 +94,20 @@ class BookingSystemTest {
     @MethodSource("TimeNullPoster")
     @DisplayName("Rooms cannot not be booked with null values Test")
     void testRoomsCannotBeBookedWithNullValuesTest (MockTimeStartAndEnd mockTime) {
-        Room room1 = new Room("1111", "Regular") ;
-        assertThatThrownBy(() ->bookingSystem.bookRoom(room1.getId(), mockTime.start(), mockTime.end()))
+        assertThatThrownBy(() ->bookingSystem.bookRoom(this.room1.getId(), mockTime.start(), mockTime.end()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Bokning kräver giltiga start- och sluttider samt rum-id");
+
+    }
+
+
+    @Test
+    @DisplayName("Rooms cannot be booked in the past Test")
+
+    void roomsCannotBeBookedInThePastTest() {
+        assertThatThrownBy(() -> bookingSystem.bookRoom(this.room1.getId(), this.pastTime, this.endTime))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Kan inte boka tid i dåtid");
 
     }
 
