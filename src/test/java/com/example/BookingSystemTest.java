@@ -84,7 +84,7 @@ class BookingSystemTest {
     @MethodSource("roomPoster")
     @DisplayName("Test rooms are available and can be booked Test")
     void testRoomsAreAvailableAndCanBeBookedTest(Room room) {
-        var outcomes = bookingSystem.bookRoom(room.getId(), startTime, endTime);
+        var outcomes = bookingSystem.bookRoom(room.getId(), this.startTime, this.endTime);
         assertThat(outcomes).isTrue();
 
     }
@@ -109,7 +109,25 @@ class BookingSystemTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Kan inte boka tid i dåtid");
 
+        assertThatCode(() -> bookingSystem.bookRoom(this.room1.getId(), this.startTime, this.endTime))
+                .doesNotThrowAnyException();
+
     }
+
+    @Test
+    @DisplayName("Rooms booking end time is greater than start time Test ")
+    void roomsBookingEndTimeIsGreaterThanStartTimeTest() {
+        assertThatThrownBy(() ->bookingSystem.bookRoom(this.room1.getId(), this.endTime, this.startTime))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Sluttid måste vara efter starttid");
+
+        assertThatCode(() -> bookingSystem.bookRoom(this.room1.getId(), this.startTime, this.endTime))
+                .doesNotThrowAnyException();
+
+    }
+
+
+
 
 
 
