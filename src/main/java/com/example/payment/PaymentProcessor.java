@@ -28,7 +28,7 @@ public class PaymentProcessor {
                 databaseConnection
                         .executeUpdate("INSERT INTO payments (amount, status) VALUES (" + amount + ", 'SUCCESS')");
             }catch (SQLException e) {
-                e.getMessage();
+                System.out.println(e.getMessage());
             }
         }
 
