@@ -5,15 +5,17 @@ import java.sql.SQLException;
 
 public class PaymentProcessor {
     private final String API_KEY; //"sk_test_123456";
-    private DatabaseConnection databaseConnection = DatabaseConnection.getInstance();
+
+    // DatabaseConnection is not testable and only Crud should exist, since direct connection to database is hard to test.
+    private final Crud databaseService;
     private final PaymentApi paymentApi;
     private final EmailService emailService;
 
 
 
-    public PaymentProcessor(String API_KEY, DatabaseConnection databaseConnection, PaymentApi paymentApi , EmailService emailService ) {
+    public PaymentProcessor(String API_KEY, Crud databaseConnection, PaymentApi paymentApi , EmailService emailService ) {
         this.API_KEY = API_KEY;
-        this.databaseConnection = databaseConnection;
+        this.databaseService = databaseConnection;
         this.paymentApi = paymentApi;
         this.emailService = emailService;
     }
@@ -25,15 +27,12 @@ public class PaymentProcessor {
         // Skriver till databas direkt
         if (response.isSuccess()) {
             try {
-                databaseConnection
-                        .executeUpdate("INSERT INTO payments (amount, status) VALUES (" + amount + ", 'SUCCESS')");
+                databaseService
+                        .executeUpdate(amount , "SUCCESS");
             }catch (SQLException e) {
                 System.out.println(e.getMessage());
             }
-        }
-
-        // Skickar e-post direkt
-        if (response.isSuccess()) {
+            // Skickar e-post direkt
             emailService.sendPaymentConfirmation("user@example.com", amount);
         }
 
