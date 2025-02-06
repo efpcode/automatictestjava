@@ -22,17 +22,18 @@ public class PaymentProcessor {
         PaymentApiResponse response = paymentApi.charge(amount);
 
         // Skriver till databas direkt
+        // changed named from executeUpdate to databaseUpdate
         if (response.isSuccess()) {
             try {
                 databaseService
-                        .executeUpdate(amount , "SUCCESS");
+                        .databaseUpdate(amount , "SUCCESS");
             }catch (DatabaseServiceException e) {
-                System.out.println(e.getMessage());
+                // Should continue to work or execute
             }
             // Skickar e-post direkt
             try{emailService.sendPaymentConfirmation("user@example.com", amount);}
             catch (EmailServiceException e) {
-                System.out.println(e.getMessage());
+                // Should continue to work or execute
             }
         }
 
