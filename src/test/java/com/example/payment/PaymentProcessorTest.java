@@ -33,24 +33,25 @@ class PaymentProcessorTest {
     private final String mockEmail = "user@example.com";
 
 
-    @Test
-    @DisplayName("Ensure that if response is not successful that return value is False")
-    void ensureThatReturnValueIsFalse() {
-        when(paymentApi.charge(isA(Double.class))).thenReturn(paymentApiResponse);
-        when(paymentApiResponse.isSuccess()).thenReturn(false);
-        var outcome = paymentProcessor.processPayment(mockAmount);
-        assertThat(outcome).isFalse();
+    @Nested
+    class HappyPathTesting {
+        @Test
+        @DisplayName("Ensure that if response is not successful that return value is False")
+        void ensureThatReturnValueIsFalse() {
+            when(paymentApi.charge(isA(Double.class))).thenReturn(paymentApiResponse);
+            when(paymentApiResponse.isSuccess()).thenReturn(false);
+            var outcome = paymentProcessor.processPayment(mockAmount);
+            assertThat(outcome).isFalse();
+        }
 
-    }
-
-    @Test
-    @DisplayName("Ensure that when response is successful return is True")
-    void ensureThatWhenResponseIsSuccessfulReturnIsTrue() {
-        when(paymentApi.charge(isA(Double.class))).thenReturn(paymentApiResponse);
-        when(paymentApiResponse.isSuccess()).thenReturn(true);
-        var outcome = paymentProcessor.processPayment(mockAmount);
-        assertThat(outcome).isTrue();
-
+        @Test
+        @DisplayName("Ensure that when response is successful return is True")
+        void ensureThatWhenResponseIsSuccessfulReturnIsTrue() {
+            when(paymentApi.charge(isA(Double.class))).thenReturn(paymentApiResponse);
+            when(paymentApiResponse.isSuccess()).thenReturn(true);
+            var outcome = paymentProcessor.processPayment(mockAmount);
+            assertThat(outcome).isTrue();
+        }
     }
 
     @Nested
@@ -58,8 +59,7 @@ class PaymentProcessorTest {
 
         @Test
         @DisplayName("Ensure that email Service been run at least once")
-
-        void ensureThatEmailServiceBeenRunAtLeastOnce () {
+        void ensureThatEmailServiceBeenRunAtLeastOnce() {
             when(paymentApi.charge(isA(Double.class))).thenReturn(paymentApiResponse);
             when(paymentApiResponse.isSuccess()).thenReturn(true);
             paymentProcessor.processPayment(mockAmount);
@@ -79,7 +79,33 @@ class PaymentProcessorTest {
             when(paymentApiResponse.isSuccess()).thenReturn(false);
             paymentProcessor.processPayment(mockAmount);
             assertThatThrownBy(() -> verify(emailService).sendPaymentConfirmation(mockEmail, mockAmount))
-                    .hasMessageContaining("\"user@example.com\",\n" +"    100.0d");
+                    .hasMessageContaining("\"user@example.com\",\n" + "    100.0d");
+
+        }
+
+        @Test
+        @DisplayName("Ensure that database service method is run at least once")
+        void ensureThatDatabaseServiceMethodIsRunAtLeastOnce() {
+            when(paymentApi.charge(isA(Double.class))).thenReturn(paymentApiResponse);
+            when(paymentApiResponse.isSuccess()).thenReturn(true);
+            paymentProcessor.processPayment(mockAmount);
+            try {
+                verify(databaseService).databaseUpdate(mockAmount, "SUCCESS");
+
+            } catch (DatabaseServiceException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+
+        @Test
+        @DisplayName("Ensures that database service is not called when response is false")
+        void ensuresThatDatabaseServiceIsNotCalledWhenResponseIsFalse() {
+            when(paymentApi.charge(isA(Double.class))).thenReturn(paymentApiResponse);
+            when(paymentApiResponse.isSuccess()).thenReturn(false);
+            paymentProcessor.processPayment(mockAmount);
+            assertThatThrownBy(() -> verify(databaseService).databaseUpdate(mockAmount, "SUCCESS"))
+                    .hasMessageContaining("SUCCESS");
 
         }
 
