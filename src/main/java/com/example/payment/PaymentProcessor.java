@@ -4,6 +4,7 @@ package com.example.payment;
 public class PaymentProcessor {
 
     // DatabaseConnection is not testable and only Crud should exist, since direct connection to database is hard to test.
+    // API Key was also remove since that should be handled when paymentApi.charge is implemented in the future.
     private final DatabaseService databaseService;
     private final PaymentApi paymentApi;
     private final EmailService emailService;
@@ -16,7 +17,7 @@ public class PaymentProcessor {
         this.emailService = emailService;
     }
 
-    public boolean processPayment(double amount) throws EmailServiceException {
+    public boolean processPayment(double amount) {
         // Anropar extern betaltjänst direkt med statisk API-nyckel
         PaymentApiResponse response = paymentApi.charge(amount);
 
@@ -29,7 +30,10 @@ public class PaymentProcessor {
                 System.out.println(e.getMessage());
             }
             // Skickar e-post direkt
-            emailService.sendPaymentConfirmation("user@example.com", amount);
+            try{emailService.sendPaymentConfirmation("user@example.com", amount);}
+            catch (EmailServiceException e) {
+                System.out.println(e.getMessage());
+            }
         }
 
         return response.isSuccess();
